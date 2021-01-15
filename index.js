@@ -5,9 +5,10 @@ const GameBoard = (() => {
         return BOARD[index] == 0 && index < BOARD.length;
     };
 
-    const play = (turn, index) => {
+    const play = (playerTurn, index) => {
         if (isValidIndex(index)) {
-            BOARD[index] = turn;
+            BOARD[index] = playerTurn.getNumber();
+            return checkWinner();
         }
     };
 
@@ -50,7 +51,6 @@ const GameBoard = (() => {
 
     return {
         play,
-        checkWinner,
     }
 })();
 
@@ -69,31 +69,39 @@ const GameController = (() => {
     const PLAYER_1 = Player(1, 'close');
     const PLAYER_2 = Player(-1, 'panorama_fish_eye');
 
-    let turn = PLAYER_1 // Starts with player 1
+    let playerTurn = PLAYER_1 // Starts with player 1
+    let turnNumber = 1;
     let gameOver = false;
 
     const nextTurn = () => {
         if (!gameOver) {
-            turn = (turn == PLAYER_1)? PLAYER_2: PLAYER_1;
+            playerTurn = (playerTurn == PLAYER_1)? PLAYER_2: PLAYER_1;
+            turnNumber++;
         }
     };
 
-    const currentPlayer = () => turn;
+    const currentPlayer = () => playerTurn;
+
+    const isGameOver = () => gameOver;
 
     const playTurn = (index) => {
         if (!gameOver) {
-            GameBoard.play(turn, index);
-            let hasWinner = GameBoard.checkWinner();
-            if (hasWinner != 0) {
+            if (turnNumber == 9) {
+                gameOver = true;
+            }
+            let result = GameBoard.play(playerTurn, index);
+            if (result == 0) {
+                nextTurn();
+            } else {
                 gameOver = true;
             }
         }
-    };
+    }
 
     return {
-        nextTurn,
         playTurn,
         currentPlayer,
+        isGameOver,
     }
 })();
 
@@ -107,9 +115,10 @@ const DisplayController = ((doc) => {
   
                 cell.id = i;
                 cell.addEventListener('click', () => {
-                    let currentPlayer = GameController.currentPlayer();
-                    cellSymbol.textContent = currentPlayer.getSymbol();
-                    GameController.nextTurn();
+                    if (cellSymbol.textContent == "" && !GameController.isGameOver()) {
+                        cellSymbol.textContent = GameController.currentPlayer().getSymbol();
+                        GameController.playTurn(i);
+                    }
                 });
 
                 cellSymbol.classList.add('material-icons');
