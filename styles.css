@@ -31,5 +31,7 @@
     justify-content: space-between;
     align-items: center;
     width: 40%;
+    min-width: 300px;
+    max-width: 400px;
     margin-top: 20px;
 }
