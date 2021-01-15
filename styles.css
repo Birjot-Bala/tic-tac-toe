@@ -21,3 +21,15 @@
 .cells .material-icons {
     font-size: 48px;
 }
+
+#clear-button {
+    margin-top: 20px;
+}
+
+.player {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 40%;
+    margin-top: 20px;
+}

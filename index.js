@@ -49,25 +49,38 @@ const GameBoard = (() => {
         return 0;
     };
 
+    const resetGameBoard = () => {
+        for (let i = 0; i < 9; i++) {
+            BOARD[i] = 0;
+        }
+    }
+
     return {
         play,
+        resetGameBoard,
     }
 })();
 
-const Player = (number, symbol) => {
+const Player = (number, symbol, name) => {
 
     const getNumber = () => number;
     const getSymbol = () => symbol;
+    const getName = () => name;
 
     return {
         getNumber,
         getSymbol,
+        getName,
     }
 };
 
-const GameController = (() => {
-    const PLAYER_1 = Player(1, 'close');
-    const PLAYER_2 = Player(-1, 'panorama_fish_eye');
+const GameController = ((doc) => {
+    const PLAYER_1 = Player(1, 
+                        'close', 
+                        doc.querySelector('#player-one-name').value);
+    const PLAYER_2 = Player(-1, 
+                        'panorama_fish_eye', 
+                        doc.querySelector('#player-two-name').value);
 
     let playerTurn = PLAYER_1 // Starts with player 1
     let turnNumber = 1;
@@ -88,32 +101,38 @@ const GameController = (() => {
         if (!gameOver) {
             if (turnNumber == 9) {
                 gameOver = true;
+                alert('Tie!')
             }
             let result = GameBoard.play(playerTurn, index);
             if (result == 0) {
                 nextTurn();
             } else {
                 gameOver = true;
+                alert(`${playerTurn.getName()} wins!`)
             }
         }
     }
 
     const newGame = () => {
-        // reset display 
-        // reset GameBoard
+        playerTurn = PLAYER_1 // Starts with player 1
+        turnNumber = 1;
+        gameOver = false;
+
+        GameBoard.resetGameBoard();
     }
 
     return {
         playTurn,
         currentPlayer,
         isGameOver,
+        newGame,
     }
-})();
+})(document);
 
 const DisplayController = ((doc) => {
     const initializeDisplay = (selector, cellClass, buttonSelector) => {
         if (!!doc && 'querySelector' in doc) {
-            setupClearButton(buttonSelector);
+            setupClearButton(buttonSelector, selector);
             const GRID = doc.querySelector(selector);
             for (let i = 0; i < 9; i++) {
                 let cell = doc.createElement('button');
@@ -144,12 +163,12 @@ const DisplayController = ((doc) => {
         }
     };
 
-    const setupClearButton = (selector) => {
+    const setupClearButton = (selector, gridSelector) => {
         if (!!doc && 'querySelector' in doc) {
             const clearButton = doc.querySelector(selector);
             clearButton.addEventListener('click', () => {
-                // ADD GAME RESET
-                resetDisplay('#grid') // temporary
+                GameController.newGame();
+                resetDisplay(gridSelector);
             });
         }
     };
