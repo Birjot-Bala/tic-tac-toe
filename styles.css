@@ -1,0 +1,21 @@
+#container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#grid {
+    display: flex;
+    flex-wrap: wrap;
+    height: 300px;
+    width: 300px;
+}
+
+.cells {
+    height: 100px;
+    width: 100px;
+}
+
+.cells .material-icons {
+    font-size: 48px;
+}
