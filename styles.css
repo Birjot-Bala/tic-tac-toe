@@ -9,11 +9,13 @@
     flex-wrap: wrap;
     height: 300px;
     width: 300px;
+    bordeR: 2px solid black;
 }
 
 .cells {
     height: 100px;
     width: 100px;
+    border: 2px solid black;
 }
 
 .cells .material-icons {

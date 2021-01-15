@@ -98,6 +98,11 @@ const GameController = (() => {
         }
     }
 
+    const newGame = () => {
+        // reset display 
+        // reset GameBoard
+    }
+
     return {
         playTurn,
         currentPlayer,
@@ -106,8 +111,9 @@ const GameController = (() => {
 })();
 
 const DisplayController = ((doc) => {
-    const initializeDisplay = (selector, cellClass) => {
+    const initializeDisplay = (selector, cellClass, buttonSelector) => {
         if (!!doc && 'querySelector' in doc) {
+            setupClearButton(buttonSelector);
             const GRID = doc.querySelector(selector);
             for (let i = 0; i < 9; i++) {
                 let cell = doc.createElement('button');
@@ -129,9 +135,29 @@ const DisplayController = ((doc) => {
         }
     };
 
+    const resetDisplay = (selector) => {
+        if (!!doc && 'querySelector' in doc) {
+            const GRID = doc.querySelector(selector);
+            for (let i = 0; i < GRID.children.length; i++) {
+                GRID.children[i].firstChild.textContent = "";
+            }
+        }
+    };
+
+    const setupClearButton = (selector) => {
+        if (!!doc && 'querySelector' in doc) {
+            const clearButton = doc.querySelector(selector);
+            clearButton.addEventListener('click', () => {
+                // ADD GAME RESET
+                resetDisplay('#grid') // temporary
+            });
+        }
+    };
+
     return {
         initializeDisplay,
+        resetDisplay,
     }
 })(document);
 
-DisplayController.initializeDisplay('#grid', 'cells');
+DisplayController.initializeDisplay('#grid', 'cells', '#clear-button');
